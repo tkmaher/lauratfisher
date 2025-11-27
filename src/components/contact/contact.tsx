@@ -70,7 +70,7 @@ export default function ContactForm() {
             required
         ></textarea>
       </div>
-      <button type="submit">Send Message</button>
+      <button type="submit">Send Message...</button>
     </form>
   );
 }

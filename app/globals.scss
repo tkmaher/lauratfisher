@@ -4,8 +4,8 @@
    Root Variables
 -------------------------------------------------- */
 :root {
-  --background: white;
-  --foreground: black;
+  --background: #ededed;
+  --foreground: #0a0a0a;
   --secondary: #e1e1e1;
   --border: 1px solid var(--foreground);
 }
@@ -22,11 +22,12 @@
 -------------------------------------------------- */
 body {
   margin: 1em 1em 3em;
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-size: 0.8em;
   overflow-x: hidden;
   z-index: 1;
+  transition: all 0.2 ease-in-out;
 }
 
 a {
@@ -39,11 +40,12 @@ a {
 
 button {
   --border: 1px solid var(--foreground);
+  float: right;
+  padding: 5px;
+}
 
-  &:hover {
-    background-color: var(--secondary);
-    color: var(--background);
-  }
+button:hover {
+  text-decoration: underline;
 }
 
 textarea,
@@ -98,7 +100,7 @@ input {
   position: absolute;
   width: 0%;
   height: 100%;
-  background-color: white;
+  background-color: var(--background);
   mix-blend-mode: difference;
   transition: width 0.5s ease-in-out;
 }
@@ -121,8 +123,9 @@ div:hover {
 }
 
 .nav-bar-menu {
-  flex: 1 1 auto;
-  width: 50%;
+  flex: 0.5 1 auto;
+  min-width: 8em;
+  max-width: 8em;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -167,17 +170,17 @@ div:hover {
     width: 40%;
     max-width: 50%;
 
-    h2 {
-      font-size: 1.5em;
-      margin-bottom: 0.5em;
-    }
-
+    
     .about-item {
       flex: 1 1 auto;
       padding: 1em;
       border: var(--border);
     }
   }
+}
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
 }
 
 @media (pointer: coarse) {

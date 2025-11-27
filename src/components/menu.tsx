@@ -7,7 +7,6 @@ export function NavBar() {
     const menuItems = [
         {"href": "/", "text": "Home"},
         {"href": "/about", "text": "About"},
-        {"href": "/bio", "text": "Bio"},
         {"href": "/gallery", "text": "Gallery"},
         {"href": "/resume", "text": "Resume"},
         {"href": "/videos", "text": "Videos"},
