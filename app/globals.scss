@@ -185,6 +185,11 @@ h2 {
   .about-mosaic {
     flex-direction: column;
 
+    .about-column {
+      max-width: 100%;
+      width: 100%;
+    }
+
     .about-item {
       width: 100%;
       max-width: 100%;
@@ -199,16 +204,35 @@ h2 {
   height: 15em;
   -webkit-overflow-scrolling: touch;
   margin: 0.5em;
+  overflow-x: auto;
+  display: flex;
+}
+
+.img-row-box {
+  height: 15em;
+  width: 30%;
+  margin: 1.5%;
+  background-size: cover;
+  background-position: center;
+  float: left;
+  filter: blur(0);
+  transition: filter 0.1s ease-in-out;
+}
+
+.img-row-box:hover {
+  cursor: pointer;
+  filter: blur(2px);
 }
 
 .image-row-container-img {
-  float: left;
+  
   height: 100%;
   width: auto;
   object-fit: cover;
   border-radius: 5px;
   margin-right: 0.5em;
 }
+
 .image-row-container-img:hover {
   cursor: pointer;
 }
@@ -257,4 +281,23 @@ h2 {
   max-width: 100%;
   height: auto;
   max-height: 80vh;
+}
+
+
+/* --------------------------------------------------
+   News
+-------------------------------------------------- */
+
+.news-box {
+  width: 100%;
+  max-width: 100%;
+  border: var(--border);
+  padding: 1em;
+  display: flex;
+  gap: 1em;
+  margin-bottom: 1em;
+  .news-img {
+    flex: 1;
+    background-size: cover;
+  }
 }

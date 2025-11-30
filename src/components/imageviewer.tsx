@@ -82,12 +82,18 @@ export default function ImageSpread(props: { imageURLs: string[], scroll: boolea
             </div>
           </>
         }
-        <div className="image-row-container" style={props.scroll ? {overflowX: "auto", display: "flex"} : {}}>
-          {props.imageURLs.map((image, index) => (
-              <img className="image-row-container-img" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} src={image} alt={`Image ${index + 1}`} />
-          )) }
-          
-        </div>
+        {props.scroll ?
+          <div className="image-row-container">
+            {props.imageURLs.map((image, index) => (
+                <img className="image-row-container-img" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} src={image} alt={`Image ${index + 1}`} />
+            )) }
+          </div> :
+          <div>
+            {props.imageURLs.map((image, index) => (
+                <div className="img-row-box" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} style={{backgroundImage: "url(" + image + ")"}} />
+            )) }
+          </div> 
+        }
       </div>
     );
 }

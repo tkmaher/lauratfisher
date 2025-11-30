@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { AboutBox, Connect, Reel, Headshots, Resume } from "@/src/components/about/aboutlayout";
 import Gallery from "@/src/components/gallery/gallery"
+import News from "@/src/components/news/news"
 
 export default async function Home({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -19,6 +20,9 @@ export default async function Home({ params }: { params: Promise<{ slug: string 
             }
             { slug === "gallery" && 
                 <Gallery/>
+            }
+            { slug === "news" && 
+                <News/>
             }
         </>
     );

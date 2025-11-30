@@ -1,4 +1,5 @@
 
+
 const bcrypt = require('bcryptjs');
 
 var __defProp = Object.defineProperty;
@@ -38,7 +39,7 @@ async function getAbout(request, env) {
     const aboutResult = await env.DB.prepare('SELECT about FROM lauratfisher_about LIMIT 1').first();
     const aboutText = aboutResult?.about || '';
 
-    const itemsResult = await env.DB.prepare('SELECT * FROM lauratfisher_links ORDER BY id DESC').all();
+    const itemsResult = await env.DB.prepare('SELECT * FROM lauratfisher_links').all();
 
     // Combine into one JSON object
     const results = {
@@ -62,30 +63,132 @@ async function getAbout(request, env) {
   }
 }
 
-async function postAbout(request, env) {
-  const contentType = request.headers.get("content-type");
-  if (contentType.includes("application/json")) {
-    const db = env.DB;
-    try {
-      const jsonIn = await request.json();
-      const aboutRez = await db.prepare('UPDATE lauratfisher_about SET about = (?) WHERE rowid = 1').bind(jsonIn["about"]);
-      await aboutRez.all();
-      await db.exec('DELETE FROM lauratfisher_links');
-      for (const { title, description, link } of jsonIn["links"]) {
-        await db.prepare('INSERT INTO lauratfisher_links (title, description, link) VALUES (?, ?, ?)').bind(title, description, link).run();
+
+async function getOpenGraphImage(url) {
+  try {
+    const response = await fetch(url, {
+      redirect: "follow",
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml"
       }
-      return new Response("Successfully received POST.", {
-        status: 200,
-        headers: { ...corsHeaders },
+    });
+
+    if (!response.ok) return null;
+
+    let ogImage = null;
+
+    const selectors = [
+      'meta[property="og:image:secure_url"]',
+      'meta[property="og:image:url"]',
+      'meta[property="og:image"]',
+      'meta[name="og:image"]'
+    ];
+
+    const rewriter = new HTMLRewriter();
+
+    for (const selector of selectors) {
+      rewriter.on(selector, {
+        element(el) {
+          if (ogImage) return;
+          const content = el.getAttribute("content");
+          if (content) ogImage = content;
+        }
       });
-    } catch (error) {
-      return new Response('Error: ' + error.message, { status: 500 });
     }
-  } else {
+
+    // Stream through HTMLRewriter (very important: do not call .text() on response)
+    await rewriter.transform(response).arrayBuffer();
+
+    console.log(ogImage);
+    
+    if (!ogImage) return null;
+
+    // Convert relative URLs to absolute
+    try {
+      ogImage = new URL(ogImage, url).href;
+    } catch {
+      // leave as-is if it can't be parsed
+    }
+    return ogImage;
+  } catch (err) {
+    console.error("Error fetching OG image:", err);
+    return null;
+  }
+}
+
+async function postAbout(request, env) {
+  const contentType = request.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
     return new Response("Malformed POST JSON.", {
       status: 400,
-      headers: { ...corsHeaders },
+      headers: { ...corsHeaders }
     });
+  }
+
+  const db = env.DB;
+
+  try {
+    const jsonIn = await request.json();
+    const incomingLinks = jsonIn.links.map(l => l.link);
+
+    // ---------------------------
+    // Update the "about" section
+    // ---------------------------
+    await db.prepare(
+      "UPDATE lauratfisher_about SET about = (?) WHERE rowid = 1"
+    ).bind(jsonIn.about).run();
+
+    const existingRows = await db.prepare(
+      "SELECT link FROM lauratfisher_links"
+    ).all();
+
+    const existingLinks = existingRows.results.map(r => r.link);
+
+    for (const dbLink of existingLinks) {
+      if (!incomingLinks.includes(dbLink)) {
+        await db.prepare(
+          "DELETE FROM lauratfisher_links WHERE link = ?"
+        ).bind(dbLink).run();
+      }
+    }
+
+    const fetchRow = db.prepare(
+      "SELECT image FROM lauratfisher_links WHERE link = ? LIMIT 1"
+    );
+
+    for (const { title, description, link } of jsonIn.links) {
+      const row = await fetchRow.bind(link).first();
+    
+      if (row) {
+        const existingImage = row.image;
+    
+        await db.prepare(
+          "REPLACE INTO lauratfisher_links (title, description, link, image) VALUES (?, ?, ?, ?)"
+        ).bind(title, description, link, existingImage).run();
+    
+      } else {
+        let image = await getOpenGraphImage(link);
+    
+        if (!image) {
+          image = "https://picsum.photos/536/354";
+        }
+    
+        await db.prepare(
+          "INSERT INTO lauratfisher_links (title, description, link, image) VALUES (?, ?, ?, ?)"
+        ).bind(title, description, link, image).run();
+      }
+    }
+
+    return new Response("Successfully received POST.", {
+      status: 200,
+      headers: { ...corsHeaders }
+    });
+
+  } catch (error) {
+    return new Response("Error: " + error.message, { status: 500 });
   }
 }
 
