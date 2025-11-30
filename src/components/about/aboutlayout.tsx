@@ -9,26 +9,26 @@ export function AboutBox() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
 
-    const workerURL = new URL(
-        "https://google.com"
+    const newsAboutURL = new URL(
+        "https://lauratfisher-worker.tomaszkkmaher.workers.dev/?page=about"
     );
 
     useEffect(() => {
         const fetchData = async () => {
         try {
-        //   console.log("Fetching data from worker...");
-        //   const response = await fetch(workerURL);
-        //   if (!response.ok) {
-        //     throw new Error(`HTTP error! status: ${response.status}`);
-        //   }
-        //   const jsonData = await response.json();
-        //   console.log("Fetched data:", jsonData);
-        //   setAbout(jsonData["about"]);
-        // } catch (err) {
-        //   console.error("Error fetching data:", err);
-        //   setError(true);
+          console.log("Fetching data from worker...");
+          const response = await fetch(newsAboutURL);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const jsonData = await response.json();
+          console.log("Fetched data:", jsonData);
+          setAbout(jsonData["about"]);
+        } catch (err) {
+          console.error("Error fetching data:", err);
+          setError(true);
         } finally {
-            if (!error) setLoading(false);
+            if (!error) setLoading(!false);
         }
         };
 
@@ -62,10 +62,10 @@ export function Icons() {
         <div style={{width: "100%", height: "10vh", right: "0"}}>
             <span className="about-item" style={{width: "50%", padding: "0", float: "right", textAlign: "right"}}>
                 <a href="https://www.imdb.com/name/nm2078266/" target="_blank">
-                    <img style={{float: "right"}} src="imdb_icon.avif" width="15%" height="15%" alt="IMDB"/>
+                    <img style={{float: "right"}} src="img/icons/imdb_icon.avif" width="15%" height="15%" alt="IMDB"/>
                 </a>
                 <a href="https://vimeo.com/lauratfisher" target="_blank">
-                    <img style={{float: "right", marginRight: "1em"}} src="vimeo_icon.avif" width="15%" height="15%" alt="Vimeo"/>
+                    <img style={{float: "right", marginRight: "1em"}} src="img/icons/vimeo_icon.avif" width="15%" height="15%" alt="Vimeo"/>
                 </a>
             </span>
         </div>
@@ -81,7 +81,7 @@ export function Headshots() {
     return (
         <span className="about-item">
             <h2>Headshots</h2>
-            <ImageSpread imageURLs={headshots}/>
+            <ImageSpread imageURLs={headshots} scroll={true}/>
             
         </span>
     );
@@ -108,7 +108,7 @@ export function Connect() {
     return (
         <div className="about-mosaic" style={{border: "1px solid black", padding: "1em"}}>
             <span className="about-column">
-                <img style={{width: "75%"}} src="talent_logo.avif"/>
+                <img style={{width: "75%"}} src="img/logos/talent_logo.avif"/>
                 1234 Maple St
                 <br/>
                 Chicago, IL 60610

@@ -1,25 +1,30 @@
 "use client";
 import { useState, useEffect, useEffectEvent } from "react";
 
-function ImageViewer(props: { imageSrcs: string[], initialIndex: number}) {
+function ImageViewer(props: { imageSrcs: string[], descriptions?: string[], initialIndex: number}) {
   const len = props.imageSrcs.length;
 
   return (
       <>
           {props.imageSrcs.map((src, index) => (
-                  <img className="overlay-image"
-                      key={index}
-                      id={"img-"+{index}}
-                      src={src}
-                      alt={`Image ${index + 1}`}
-                      style={{ left: index === (props.initialIndex) ? '50%' : 
-                          ((props.initialIndex === 0 && index === len - 1) 
-                              || index < props.initialIndex 
-                              && !(index === 0 && props.initialIndex === len - 1)) ? '-150%' 
-                          : '150%',
-                      opacity: index === (props.initialIndex) ? 1 : 0}}
+                  <div className="overlay-image"
+                    key={index}
+                    id={"img-"+{index}}
 
-                  />
+                    style={{ left: index === (props.initialIndex) ? '50%' : 
+                      ((props.initialIndex === 0 && index === len - 1) 
+                          || index < props.initialIndex 
+                          && !(index === 0 && props.initialIndex === len - 1)) ? '-150%' 
+                      : '150%',
+                      opacity: index === (props.initialIndex) ? 1 : 0,
+                      textAlign: "left",
+                      fontSize: "1.5em"
+                    }}
+
+                  >
+                    <img src={src} alt={`Image ${index + 1}`}/>
+                    {props.descriptions && props.descriptions[index]}
+                  </div>
               ))
           }
           
@@ -27,11 +32,11 @@ function ImageViewer(props: { imageSrcs: string[], initialIndex: number}) {
   );
 }
 
-export default function ImageSpread({ imageURLs }: { imageURLs: string[] }) {
+export default function ImageSpread(props: { imageURLs: string[], scroll: boolean, descriptions?: string[] }) {
     const [viewerOpen, setViewerOpen] = useState(false);
     const [viewerindex, setViewerIndex] = useState(0);
   
-    const numPics = imageURLs.length;
+    const numPics = props.imageURLs.length;
   
     useEffect(() => {
       const handleKeyDown = (event: any) => {
@@ -73,12 +78,12 @@ export default function ImageSpread({ imageURLs }: { imageURLs: string[] }) {
             <button className="img-scroller" style={{right: "10px"}} onClick={forwardScroll}>&gt;</button>
             <button className="img-scroller" style={{left: "10px"}} onClick={backwardScroll}>&lt;</button>
             <div className="img-overlay" onClick={() => setViewerOpen(false)}>
-              <ImageViewer imageSrcs={imageURLs} initialIndex={viewerindex}/>
+              <ImageViewer imageSrcs={props.imageURLs} descriptions={props.descriptions} initialIndex={viewerindex}/>
             </div>
           </>
         }
-        <div className="image-row-container">
-          {imageURLs.map((image, index) => (
+        <div className="image-row-container" style={props.scroll ? {overflowX: "auto", display: "flex"} : {}}>
+          {props.imageURLs.map((image, index) => (
               <img className="image-row-container-img" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} src={image} alt={`Image ${index + 1}`} />
           )) }
           

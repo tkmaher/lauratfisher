@@ -17,12 +17,12 @@ export function NavBar() {
 
     function MenuItem(props: { href: string; text: string; }) {
         return (
-            <span className="nav-item" style={{
+            <Link href={props.href} className="nav-item" style={{
                 textDecoration: pathName == props.href ? "underline" : "none",
                 
             }}>
-                <Link href={props.href}>{props.text}</Link>
-            </span>
+                {props.text}
+            </Link>
         );
     }
     
@@ -42,9 +42,11 @@ export function Header() {
 
     return (
         <div className="column-header">
-            <div className="inverter"></div>
-            <Link className="nav-bar-title" href="/">Laura T. Fisher</Link>
-            <div>SAG-AFTRA, AEA</div>
+            <Link href="/">
+                <div className="inverter"></div>
+                <div className="nav-bar-title" >Laura T. Fisher</div>
+                <div>SAG-AFTRA, AEA</div>
+            </Link>
         </div>
     );
 }

@@ -33,9 +33,7 @@ body {
 a {
   cursor: pointer;
 
-  &:hover {
-    text-decoration: underline;
-  }
+
 }
 
 button {
@@ -198,15 +196,13 @@ h2 {
    Image Scroller
 -------------------------------------------------- */
 .image-row-container {
-  display: flex;
-  overflow-x: auto;
-  height: 10em;
+  height: 15em;
   -webkit-overflow-scrolling: touch;
   margin: 0.5em;
 }
 
 .image-row-container-img {
-  flex-shrink: 0;
+  float: left;
   height: 100%;
   width: auto;
   object-fit: cover;
