@@ -39,7 +39,7 @@ async function getAbout(request, env) {
     const aboutResult = await env.DB.prepare('SELECT about FROM lauratfisher_about LIMIT 1').first();
     const aboutText = aboutResult?.about || '';
 
-    const itemsResult = await env.DB.prepare('SELECT * FROM lauratfisher_links').all();
+    const itemsResult = await env.DB.prepare('SELECT * FROM lauratfisher_links ORDER BY date DESC').all();
 
     // Combine into one JSON object
     const results = {
@@ -159,15 +159,15 @@ async function postAbout(request, env) {
       "SELECT image FROM lauratfisher_links WHERE link = ? LIMIT 1"
     );
 
-    for (const { title, description, link } of jsonIn.links) {
+    for (const { title, description, link, date } of jsonIn.links) {
       const row = await fetchRow.bind(link).first();
     
       if (row) {
         const existingImage = row.image;
     
         await db.prepare(
-          "REPLACE INTO lauratfisher_links (title, description, link, image) VALUES (?, ?, ?, ?)"
-        ).bind(title, description, link, existingImage).run();
+          "REPLACE INTO lauratfisher_links (title, description, link, image, date) VALUES (?, ?, ?, ?, ?)"
+        ).bind(title, description, link, existingImage, date).run();
     
       } else {
         let image = await getOpenGraphImage(link);
@@ -177,8 +177,8 @@ async function postAbout(request, env) {
         }
     
         await db.prepare(
-          "INSERT INTO lauratfisher_links (title, description, link, image) VALUES (?, ?, ?, ?)"
-        ).bind(title, description, link, image).run();
+          "INSERT INTO lauratfisher_links (title, description, link, image, date) VALUES (?, ?, ?, ?, ?)"
+        ).bind(title, description, link, image, date).run();
       }
     }
 

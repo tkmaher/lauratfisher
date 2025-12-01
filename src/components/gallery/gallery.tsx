@@ -37,7 +37,7 @@ export default function Gallery() {
 
     return (
         <>
-            {!loading && <div>
+            {loading ? "Loading..." : <div>
                 {error ? "Error fetching gallery!" : 
                     <ImageSpread imageURLs={urls} scroll={false} descriptions={descriptions}/>
                 }

@@ -36,7 +36,7 @@ export default function EditPage() {
             setAbout(jsonData["about"]);
             let newLinks = [];
             for (const link of jsonData["links"]) {
-                newLinks.push([link["title"], link["description"], link["link"]]);
+                newLinks.push([link["title"], link["description"], link["link"], link["date"] || ""]);
             }
             setLinks(newLinks);
             response = await fetch(galleryURL);
@@ -63,8 +63,14 @@ export default function EditPage() {
 
         const aboutData = {
             about: about,
-            links: links.map(link => ({title: link[0], description: link[1], link: link[2]}))
+            links: links.map(link => ({
+                title: link[0],
+                description: link[1],
+                link: link[2],
+                date: link[3]
+            }))
         };
+        console.log("Sending about data: ", aboutData)
         try {
             const newUrl = new URL(newsAboutURL);
             newUrl.searchParams.append("password", password);
@@ -107,20 +113,41 @@ export default function EditPage() {
         }
     }
 
-    function NewsLink(props: {info: [string, string, string], empty: boolean, index?: number}) {
-        const [title, setTitle] = useState<string>(props.info[0]);
-        const [description, setDescription] = useState<string>(props.info[1]);
-        const [url, setUrl] = useState<string>(props.info[2]);
+    function NewsLink(props: {info: [string, string, string, string], empty: boolean, index?: number}) {
+        const [info, setInfo] = useState<string[]>(props.info);
+
+        useEffect(() => {
+            setInfo(props.info);
+        }, [props.info]);
+
+        const update = (e: any, i: number) => {
+            let newInfo = [...info];
+            newInfo[i] = e.target.value;
+            setInfo(newInfo);
+        };
+
+        const propagate = () => {
+            if (props.index != null) {
+                let newLinkList = [...links];
+                newLinkList[props.index] = info;
+                setLinks(newLinkList);
+            }
+        }
 
         return (
             <div>
                 <label>
-                    <input type="text" name="title" placeholder="Title" value={title} onChange={(e) => {setTitle(e.target.value)}}/>
-                    <input type="text" name="description" placeholder="Description" value={description} onChange={(e) => {setDescription(e.target.value)}}/>
-                    <input type="text" name="url" value={url} placeholder="URL" onChange={(e) => {setUrl(e.target.value)}}/>
-                    
+                    <input type="text" name="title" placeholder="Title" value={info[0]} onBlur={propagate} onChange={(e) => update(e, 0)}/>
+                    <input type="text" name="description" placeholder="Description" value={info[1]} onBlur={propagate} onChange={(e) => update(e, 1)}/>
+                    <input type="text" name="url" value={info[2]} placeholder="URL" onBlur={propagate} onChange={(e) => update(e, 2)}/>
+                    <input
+                        type="date"
+                        value={info[3] || ""}
+                        onChange={(e) => update(e, 3)}
+                        onBlur={propagate}
+                    />
                     {props.empty ? 
-                        (<button type="button" style={{float: "right"}} onClick={(e) => addUrl(e, title, description, url)}>Add</button>) : 
+                        (<button type="button" style={{float: "right"}} onClick={(e) => addUrl(e, info[0], info[1], info[2])}>Add</button>) : 
                         (<button type="button" style={{float: "right"}} onClick={(e) => removeUrl(e, props.index)}>Remove</button>)
                     }
                 </label>
@@ -180,7 +207,7 @@ export default function EditPage() {
                         {links.map((info, index) => {
                             return <NewsLink key={index} info={info} empty={false} index={index}/>
                         })}
-                        <NewsLink info={["", "", ""]} empty={true}/>
+                        <NewsLink info={["", "", "", ""]} empty={true}/>
                         <button type="submit">Save changes</button>                     
                     </form>
                     <br/>
