@@ -7,6 +7,7 @@
 	"name": "lauratfisher-worker",
 	"main": "src/index.js",
 	"compatibility_date": "2025-11-13",
+	"compatibility_flags": ["nodejs_compat"],
 	"observability": {
 		"enabled": true
 	},
@@ -38,7 +39,9 @@
 	 * Environment Variables
 	 * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
 	 */
-	// "vars": { "MY_VARIABLE": "production_value" }
+	"vars": {
+	    "RESEND_API_KEY": "re_4Fz5r5YA_6EiPFgPqeknCdNW3Wx2KZRQr"
+	}
 	/**
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/

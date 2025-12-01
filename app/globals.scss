@@ -129,24 +129,26 @@ div:hover {
   flex-wrap: wrap;
   justify-content: space-around;
 
-  .nav-item {
-    text-align: center;
-    padding: 0.5em;
-    width: 100%;
-    margin-bottom: 1em;
-    border: var(--border);
-  }
 }
 
-.nav-item {
+.nav-item, #nav-item-opener {
+  text-align: center;
+  padding: 0.5em;
+  width: 100%;
+  margin-bottom: 1em;
+  border: var(--border);
   color: var(--foreground);
   background-color: var(--background);
   transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
 
-  &:hover {
-    background-color: var(--foreground);
-    color: var(--background);
-  }
+.nav-item:hover {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+#nav-item-opener {
+  display: none;
 }
 
 /* --------------------------------------------------
@@ -195,6 +197,45 @@ h2 {
       max-width: 100%;
     }
   }
+
+  .column {
+    flex-direction: column;
+    .nav-bar-menu {
+      width: 100%;
+      max-width: none !important;
+      
+    }
+    gap: 0;
+  }
+
+  .column-body {
+    width: 100%;
+  }
+
+  #nav-item-opener {
+    display:block;
+  }
+
+  .nav-item {
+    display: none;
+  }
+
+  .news-box {
+    flex-direction: column;
+    .news-img {
+      max-width: 100% !important; 
+      min-height: 150px;
+      background-size: cover;
+      background-position: center;
+      flex: 1 0 0  !important;
+    }
+    .news-body {
+      flex: 1 1;
+    }
+    .news-date {
+      float: none !important;
+    }
+  }
 }
 
 /* --------------------------------------------------
@@ -216,12 +257,26 @@ h2 {
   background-position: center;
   float: left;
   filter: blur(0);
-  transition: filter 0.1s ease-in-out;
+}
+
+.img-row-box-title {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 1.5em;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .img-row-box:hover {
   cursor: pointer;
-  filter: blur(2px);
+  .img-row-box-title {
+    opacity: 1.0;
+  }
 }
 
 .image-row-container-img {
@@ -290,7 +345,7 @@ h2 {
 
 .news-box {
   width: 100%;
-  height: 15em;
+  min-height: 15em;
   max-width: 100%;
   border: var(--border);
   padding: 1em;
@@ -299,8 +354,15 @@ h2 {
   margin-bottom: 1em;
   .news-img {
     max-width: 25%;
-    flex: 1;
+    max-height: 15em;
+    flex: 1 0 0;
     background-size: cover;
     background-position: center;
+  }
+  .news-body {
+    flex: 1 1;
+  }
+  .news-date {
+    float: right;
   }
 }

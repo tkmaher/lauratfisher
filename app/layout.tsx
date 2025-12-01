@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { userAgent } from 'next/server';
 import "./globals.scss";
 import localFont from 'next/font/local';
 import { Header, NavBar} from "../src/components/menu";
@@ -36,6 +36,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
 
   return (
     <html lang="en">

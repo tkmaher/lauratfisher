@@ -90,7 +90,9 @@ export default function ImageSpread(props: { imageURLs: string[], scroll: boolea
           </div> :
           <div>
             {props.imageURLs.map((image, index) => (
-                <div className="img-row-box" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} style={{backgroundImage: "url(" + image + ")"}} />
+                <div className="img-row-box" onClick={() => {setViewerIndex(index); setViewerOpen(true)}} key={index} style={{backgroundImage: "url(" + image + ")"}}>
+                  {props.descriptions && <div className="img-row-box-title">{props.descriptions[index]}</div>}
+                </div>
             )) }
           </div> 
         }

@@ -7,8 +7,8 @@ function NewsLink(props: {newsItem: {title: string, description: string, link: s
         <a href={props.newsItem.link} target="_blank">
             <div className="news-box">
                 <div className="news-img" style={{backgroundImage: "url(" + props.newsItem.image + ")"}}/>
-                <div style={{flex: "1 auto"}}>
-                    <div style={{float: "right"}}>{props.newsItem.date}</div>
+                <div className="news-body">
+                    <div className="news-date">{props.newsItem.date}</div>
                     <h2>{props.newsItem.title}</h2>
                     <div>{props.newsItem.description}</div>
                 </div>

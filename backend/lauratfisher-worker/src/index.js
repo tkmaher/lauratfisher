@@ -1,5 +1,5 @@
 
-
+import { Resend } from 'resend';
 const bcrypt = require('bcryptjs');
 
 var __defProp = Object.defineProperty;
@@ -119,6 +119,51 @@ async function getOpenGraphImage(url) {
   }
 }
 
+async function postConnect(request, env) {
+  const contentType = request.headers.get("content-type") || "";
+
+  if (!contentType.includes("application/json")) {
+    return new Response("Malformed POST JSON.", {
+      status: 400,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }
+
+  try {
+    const data = await request.json();
+    const { name, email, subject, message } = data;
+
+    const resend = new Resend(env.RESEND_API_KEY);
+
+    const response = await resend.emails.send({
+      from: "Website Contact <onboarding@resend.dev>", // TODO: CHANGE TO DOMAIN EMAIL AND VERIFY
+      to: "tomaszkkmaher@gmail.com",  // TODO: CHANGE TO LAURA EMAIL
+      subject: subject || "New contact form submission",
+      html: `
+        <html>
+          <body>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+          </body>
+        </html>
+      `
+    });
+
+    console.log(response);
+  } catch (e) {
+    console.error(e);
+    return new Response("Failed to send email", { status: 500 });
+  }
+
+  return new Response("Email sent", {
+    headers: { "Access-Control-Allow-Origin": "*" },
+  });
+}
+
+
+
 async function postAbout(request, env) {
   const contentType = request.headers.get("content-type") || "";
   if (!contentType.includes("application/json")) {
@@ -134,9 +179,6 @@ async function postAbout(request, env) {
     const jsonIn = await request.json();
     const incomingLinks = jsonIn.links.map(l => l.link);
 
-    // ---------------------------
-    // Update the "about" section
-    // ---------------------------
     await db.prepare(
       "UPDATE lauratfisher_about SET about = (?) WHERE rowid = 1"
     ).bind(jsonIn.about).run();
@@ -291,7 +333,7 @@ async function hashPassword(password) {
 }
 
 async function checkLogin(passwordIn) {
-  const hashedPassword = "$2b$10$aPWQBpdJECQfzeujfxGgmuePTQ3G4.TH7bPvy0W2ymcJ4qrRj4Uti";
+  const hashedPassword = "$2b$10$aPWQBpdJECQfzeujfxGgmuCueOLGeqkr.lBjMcg49bpKRgXf2/zVO";
   if (passwordIn == null) {
     return false;
   }
@@ -331,6 +373,9 @@ export default {
         return getGallery(request, env);
       }
     } else if (method === "POST") {
+      if (page == "connect") {
+        return postConnect(request, env);
+      }
       console.log("checking: ", passwordIn);
       if (await checkLogin(passwordIn) == false) {
         return new Response("Invalid credentials.", {

@@ -46,12 +46,48 @@ export function AboutBox() {
     );
 };
 
-export function Reel() {
+export function Reel(props: {single: boolean}) {
+    const ids = [
+        {
+            name: "2019 Reel",
+            id: "347382835"
+        },
+        {
+            name: "CHICAGO PD Clip",
+            id: "212394362"
+        },
+        {
+            name: "CONTAGION Clip",
+            id: "212397154"
+        },
+        {
+            name: "BODY/S Clip",
+            id: "213584303"
+        }
+    ]
+    function VimeoPlayer(props: {id: string}) {
+        return (
+            <>
+                <div style={{padding:"56.31% 0 0 0", position:"relative"}}><iframe src={`https://player.vimeo.com/video/${props.id}?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479`} allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style={{position:"absolute",top:"0",left:"0",width:"100%",height:"100%"}} title="LAURA T. FISHER - 2019 Reel"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+            </>
+        )
+    }
+
     return (
         <span className="about-item">
-            <h2>Reel</h2>
+            { props.single && <h2>Reel</h2> }
             <div>
-            <div style={{padding:"56.31% 0 0 0", position:"relative"}}><iframe src="https://player.vimeo.com/video/347382835?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style={{position:"absolute",top:"0",left:"0",width:"100%",height:"100%"}} title="LAURA T. FISHER - 2019 Reel"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+            {props.single ? 
+                <VimeoPlayer id={"347382835"}/> :
+                ids.map((item) =>
+                    <div style={{border: "1px solid black", padding: "1em", marginBottom: "1em"}} key={item.id}>
+                        <h2>{item.name}</h2>
+                        <VimeoPlayer id={item.id}/>
+                        <br/>
+                    </div>
+                )
+                
+            }
             </div>   
         </span>
     );
@@ -134,7 +170,7 @@ export function AboutLayout() {
                     <Headshots/>
                 </div>
                 <div className="about-column">
-                    <Reel />
+                    <Reel single={true} />
                     
                     <span className="about-item">
                         <Resume />
