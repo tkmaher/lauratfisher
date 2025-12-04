@@ -87,7 +87,7 @@ export default function ContactForm() {
             id="message"
             name="message"
             value={formData.message}
-            placeholder='Your Message'
+            placeholder='Your Message...'
             onChange={handleChange}
             required
         ></textarea>

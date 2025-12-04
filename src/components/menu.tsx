@@ -39,17 +39,28 @@ export function NavBar() {
         return (
             <Link href={props.href} className="nav-item" style={{
                 textDecoration: pathName == props.href ? "underline" : "none",
-                display: open == true ? "block" : "none"
+                display: open == true ? "block" : "none",
             }}
-            onClick={() => {if (mobile) { setOpen(!open) }}}>
+            onClick={() => {if (mobile) { menuOpener() }}}>
                 {props.text}
             </Link>
         );
     }
     
+    const menuOpener = () => {
+        if (open) {
+            document.getElementById("nav-item-opener")?.style.setProperty("filter", "invert(0%)");
+            document.getElementById("column-body")?.style.setProperty("display", "block");
+        } else {
+            document.getElementById("nav-item-opener")?.style.setProperty("filter", "invert(100%)");
+            document.getElementById("column-body")?.style.setProperty("display", "none");
+        }
+        setOpen(!open);
+    }
+
     return (
         <div className="nav-bar-menu">
-            <div id="nav-item-opener" onClick={() => setOpen(!open)}>Menu...</div>
+            <div id="nav-item-opener" onClick={menuOpener}>Menu...</div>
                     {menuItems.map((item) => {
                         return <MenuItem key={item["text"]}
                                         href={item["href"]} 

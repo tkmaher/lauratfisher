@@ -44,7 +44,7 @@ export default function RootLayout({
         <Header/>
         <div className="column">
           <NavBar/>
-          <div className="column-body">
+          <div id="column-body">
             {children}
           </div>
         </div>

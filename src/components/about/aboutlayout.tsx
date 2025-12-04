@@ -2,7 +2,7 @@
 import Link from "next/link";
 import ContactForm from "@/src/components/contact/contact";
 import ImageSpread from "@/src/components/imageviewer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 export function AboutBox() {
     const [about, setAbout] = useState("");
@@ -28,7 +28,7 @@ export function AboutBox() {
           console.error("Error fetching data:", err);
           setError(true);
         } finally {
-            if (!error) setLoading(!false);
+            if (!error) setLoading(false);
         }
         };
 
@@ -39,7 +39,7 @@ export function AboutBox() {
     return (
         <>
             <h2>About Me</h2>
-            {loading && <div>
+            {loading ? <div>Loading...</div> : <div>
                 {error ? "Error fetching about!" : about}
             </div>}  
         </>
@@ -95,15 +95,13 @@ export function Reel(props: {single: boolean}) {
 
 export function Icons() {
     return (
-        <div style={{width: "100%", height: "10vh", right: "0"}}>
-            <span className="about-item" style={{width: "50%", padding: "0", float: "right", textAlign: "right"}}>
+        <div style={{width: "100%", right: "0"}}>
                 <a href="https://www.imdb.com/name/nm2078266/" target="_blank">
-                    <img style={{float: "right"}} src="img/icons/imdb_icon.avif" width="15%" height="15%" alt="IMDB"/>
+                    <img style={{float: "right"}} src="img/icons/imdb_icon.avif" width="50vw" alt="IMDB"/>
                 </a>
                 <a href="https://vimeo.com/lauratfisher" target="_blank">
-                    <img style={{float: "right", marginRight: "1em"}} src="img/icons/vimeo_icon.avif" width="15%" height="15%" alt="Vimeo"/>
+                    <img style={{float: "right", marginRight: "1em"}} src="img/icons/vimeo_icon.avif" width="50vw" alt="Vimeo"/>
                 </a>
-            </span>
         </div>
     )
 }
@@ -144,7 +142,7 @@ export function Connect() {
     return (
         <div className="about-mosaic" style={{border: "1px solid black", padding: "1em"}}>
             <span className="about-column">
-                <img style={{width: "75%"}} src="img/logos/talent_logo.avif"/>
+                <img style={{width: "100%"}} src="https://en.eragroup.com/wp-content/uploads/2018/02/logo-placeholder.png"/>
                 1234 Maple St
                 <br/>
                 Chicago, IL 60610
