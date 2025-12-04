@@ -95,14 +95,18 @@ export function Reel(props: {single: boolean}) {
 
 export function Icons() {
     return (
-        <div style={{width: "100%", right: "0"}}>
-                <a href="https://www.imdb.com/name/nm2078266/" target="_blank">
-                    <img style={{float: "right"}} src="img/icons/imdb_icon.avif" width="50vw" alt="IMDB"/>
-                </a>
+        <>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "1em", marginTop: "3em"}}>
+                    <a href="https://www.imdb.com/name/nm2078266/" target="_blank">
+                        <img src="img/icons/imdb_icon.avif" width="50vw" alt="IMDB"/>
+                    </a>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center"}}>
                 <a href="https://vimeo.com/lauratfisher" target="_blank">
-                    <img style={{float: "right", marginRight: "1em"}} src="img/icons/vimeo_icon.avif" width="50vw" alt="Vimeo"/>
+                    <img  src="img/icons/vimeo_icon.avif" width="50vw" alt="Vimeo"/>
                 </a>
-        </div>
+            </div>
+        </>
     )
 }
 
